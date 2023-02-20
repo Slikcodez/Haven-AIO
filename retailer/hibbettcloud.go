@@ -194,7 +194,7 @@ func (self *HibbettBase) getPaymentId() {
 	)
 
 	if res != "error" {
-
+		fmt.Println(res)
 	} else {
 		fmt.Println("Error getting payment id")
 		Init(self.thread, self.account)
