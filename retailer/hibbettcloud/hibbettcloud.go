@@ -4,12 +4,14 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	http "github.com/bogdanfinn/fhttp"
+	"log"
 	"main/client"
 	"math/rand"
 	"os"
 	"strings"
 	"time"
+
+	http "github.com/bogdanfinn/fhttp"
 )
 
 type HibbettBase struct {
@@ -194,7 +196,11 @@ func (self *HibbettBase) getPaymentId() {
 	)
 
 	if res != "error" {
-		fmt.Println(res)
+		paymentOptions := self.getHibbetPaymentOptions(res)
+
+		for _, elem := range paymentOptions {
+			log.Println(elem.Id, elem.PaymentObject.Number)
+		}
 	} else {
 		fmt.Println("Error getting payment id")
 		Init(self.thread, self.account)

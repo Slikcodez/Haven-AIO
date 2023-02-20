@@ -3,7 +3,7 @@ package helpers
 import (
 	"bufio"
 	"fmt"
-	"main/retailer"
+	hibbetcloud "main/retailer/hibbettcloud"
 	"os"
 	"strconv"
 	"sync"
@@ -43,7 +43,7 @@ func InitTask() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			hibbettcloud.Init(strconv.Itoa(ThreadNumTask), account)
+			hibbetcloud.Init(strconv.Itoa(ThreadNumTask), account)
 
 		}()
 		time.Sleep(500 * time.Millisecond)
