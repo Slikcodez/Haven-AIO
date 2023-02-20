@@ -4,5 +4,5 @@ idea
 # Vscode
 .vscode
 
-configs/settings.json
-/configs/settings.json
+# configs/settings.json
+# /configs/settings.json
