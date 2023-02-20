@@ -3,3 +3,5 @@ idea
 .idea
 # Vscode
 .vscode
+
+configs/settings.json

@@ -3,7 +3,7 @@ package helpers
 import (
 	"bufio"
 	"fmt"
-	"main/retailer"
+	"main/retailer/hibbettcloud"
 	"os"
 	"strconv"
 	"sync"
