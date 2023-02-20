@@ -15,6 +15,7 @@ import (
 type HibbettBase struct {
 	client      client.HttpClient
 	thread      string
+	account     string
 	paymentId   string
 	token       string
 	userAgent   string
@@ -39,6 +40,7 @@ func Init(thread string, account string) {
 
 	self := HibbettBase{
 		thread:      thread,
+		account:     account,
 		paymentId:   "",
 		token:       "",
 		userAgent:   fmt.Sprintf("hibbett | CG/6.3.0 (com.hibbett.hibbett-sports; build:%v; iOS 16.0.0)", rand.Intn(15000)+1),
@@ -152,17 +154,49 @@ func (self *HibbettBase) loginAccount() {
 		err = json.Unmarshal([]byte(res), &responseData)
 		if err != nil {
 			fmt.Println("Error parsing JSON:", err)
-			return
+			Init(self.thread, self.account)
 		} else {
 			self.sessionId = responseData.SessionID
 			self.customerId = responseData.CustomerID
 
 			fmt.Println("Logged in")
+			self.getPaymentId()
 		}
 
 	} else {
 		fmt.Println("Error logging in")
-		return
+		Init(self.thread, self.account)
 	}
 
+}
+
+func (self *HibbettBase) getPaymentId() {
+
+	res := client.TlsRequest(
+		self.client,
+		http.MethodGet,
+		"https://hibbett-mobileapi.prolific.io/users/"+self.customerId+"/payment_methods",
+		http.Header{
+			"Accept":             {"*/*"},
+			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":    {"en-US;q=1.0"},
+			"Connection":         {"keep-alive"},
+			"Content-Type":       {"application/json; charset=utf-8"},
+			"platform":           {"ios"},
+			"version":            {"6.3.0"},
+			"Authorization":      {"Bearer " + self.sessionId},
+			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION": {"4"}, //1 also works
+			"User-Agent":         {self.userAgent},
+		},
+		nil,
+		200,
+	)
+
+	if res != "error" {
+
+	} else {
+		fmt.Println("Error getting payment id")
+		Init(self.thread, self.account)
+	}
 }
