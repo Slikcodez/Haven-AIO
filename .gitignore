@@ -5,3 +5,4 @@ idea
 .vscode
 
 configs/settings.json
+/configs/settings.json
