@@ -194,7 +194,41 @@ func (self *HibbettBase) getPaymentId() {
 	)
 
 	if res != "error" {
-		fmt.Println(res)
+
+		type Payment struct {
+			ID            string `json:"id"`
+			Type          string `json:"type"`
+			PaymentObject struct {
+				NameOnCard        string `json:"nameOnCard"`
+				CardType          string `json:"cardType"`
+				Number            string `json:"number"`
+				ExpirationMonth   int    `json:"expirationMonth"`
+				ExpirationYear    int    `json:"expirationYear"`
+				CreditCardExpired bool   `json:"creditCardExpired"`
+				CreditCardToken   string `json:"creditCardToken"`
+				EncryptedCVNValue string `json:"encryptedCVNValue"`
+			} `json:"paymentObject"`
+		}
+
+		var payments []Payment
+		err := json.Unmarshal([]byte(res), &payments)
+		if err != nil {
+			fmt.Println("Error parsing JSON:", err)
+			Init(self.thread, self.account)
+		} else {
+
+			for _, payment := range payments {
+
+				if payment.PaymentObject.Number == self.four {
+					self.paymentId = payment.ID
+					self.paymentType = payment.Type
+				} else {
+					fmt.Println("Error, no valid paymentID found")
+				}
+			}
+
+		}
+
 	} else {
 		fmt.Println("Error getting payment id")
 		Init(self.thread, self.account)
