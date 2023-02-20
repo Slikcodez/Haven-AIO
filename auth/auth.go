@@ -17,9 +17,8 @@ import (
 	"github.com/google/uuid"
 )
 
-
 func authLoop(key string) {
-	for ; ; {
+	for {
 		reqBody, err := json.Marshal(map[string]string{
 			"license": key,
 			"hwid":    hex.EncodeToString(uuid.NodeID()),
@@ -83,7 +82,5 @@ func StartAuthFunc(key string) (status string) {
 		} else {
 			return "403"
 		}
-
 	}
 }
-
