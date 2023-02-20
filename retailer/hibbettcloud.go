@@ -131,11 +131,10 @@ func (self *HibbettBase) loginAccount() {
 			"Accept-Language":    {"en-US;q=1.0"},
 			"Connection":         {"keep-alive"},
 			"Content-Type":       {"application/json; charset=utf-8"},
-			"Host":               {"hibbett-mobileapi.prolific.io"},
 			"platform":           {"ios"},
 			"version":            {"6.3.0"},
 			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"4"},
+			"X-PX-AUTHORIZATION": {"4"}, //1 also works
 			"User-Agent":         {self.userAgent},
 		},
 		strings.NewReader(string(jsonData)),
