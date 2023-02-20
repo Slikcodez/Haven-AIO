@@ -3,7 +3,6 @@ package hibbettcloud
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"main/client"
 
 	http "github.com/bogdanfinn/fhttp"
@@ -51,8 +50,7 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 		Init(user.thread, user.account)
 		return
 	}
-	payments = user.unmarshalPaymentIDs([]byte(res))
-	log.Println(payments)
+	payments = user.unmarshalPaymentIDs((res))
 	return
 }
 
