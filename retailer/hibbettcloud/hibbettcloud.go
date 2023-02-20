@@ -10,8 +10,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	http "github.com/bogdanfinn/fhttp"
 )
 
 type HibbettBase struct {
@@ -125,25 +123,7 @@ func (self *HibbettBase) loginAccount() {
 			expectedResponse: 200, 201, etc
 	*/
 
-	res := client.TlsRequest(
-		self.client,
-		http.MethodPost,
-		"https://hibbett-mobileapi.prolific.io/users/login",
-		http.Header{
-			"Accept":             {"*/*"},
-			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":    {"en-US;q=1.0"},
-			"Connection":         {"keep-alive"},
-			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
-			"version":            {"6.3.0"},
-			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"4"}, //1 also works
-			"User-Agent":         {self.userAgent},
-		},
-		strings.NewReader(string(jsonData)),
-		200,
-	)
+	res := self.loginRequest(jsonData)
 
 	if res != "error" {
 
@@ -174,26 +154,7 @@ func (self *HibbettBase) loginAccount() {
 
 func (self *HibbettBase) getPaymentId() {
 
-	res := client.TlsRequest(
-		self.client,
-		http.MethodGet,
-		"https://hibbett-mobileapi.prolific.io/users/"+self.customerId+"/payment_methods",
-		http.Header{
-			"Accept":             {"*/*"},
-			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":    {"en-US;q=1.0"},
-			"Connection":         {"keep-alive"},
-			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
-			"version":            {"6.3.0"},
-			"Authorization":      {"Bearer " + self.sessionId},
-			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"4"}, //1 also works
-			"User-Agent":         {self.userAgent},
-		},
-		nil,
-		200,
-	)
+	res := self.paymentIDRequest()
 
 	if res != "error" {
 		paymentOptions := self.getHibbetPaymentOptions(res)

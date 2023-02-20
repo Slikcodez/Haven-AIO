@@ -1,11 +1,12 @@
 package client
 
 import (
-	http "github.com/bogdanfinn/fhttp"
-	tls_client "github.com/bogdanfinn/tls-client"
 	"io"
 	"log"
 	"net/url"
+
+	http "github.com/bogdanfinn/fhttp"
+	tls_client "github.com/bogdanfinn/tls-client"
 )
 
 type HttpClient interface {
@@ -46,16 +47,16 @@ func GetTLS(proxy string) HttpClient {
 	return client
 }
 
-func TlsRequest(client HttpClient, method string, url string, headers http.Header, body io.Reader, expectedResponse int) string {
+func TlsRequest(params TLSParams) string {
 
-	req, err := http.NewRequest(method, url, body)
+	req, err := http.NewRequest(params.Method, params.Url, params.Body)
 	if err != nil {
 		return ""
 	}
 
-	req.Header = headers
+	req.Header = params.Headers
 
-	resp, err := client.Do(req)
+	resp, err := params.Client.Do(req)
 	if err != nil {
 		return ""
 	}
@@ -63,7 +64,7 @@ func TlsRequest(client HttpClient, method string, url string, headers http.Heade
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			
 		}
 	}(resp.Body)
 
@@ -72,7 +73,7 @@ func TlsRequest(client HttpClient, method string, url string, headers http.Heade
 		return ""
 	}
 
-	if expectedResponse == resp.StatusCode {
+	if params.ExpectedResponse == resp.StatusCode {
 		return string(readBytes)
 	} else {
 		return "error"
