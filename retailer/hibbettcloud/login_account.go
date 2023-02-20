@@ -49,8 +49,11 @@ func (user *HibbettBase) loginAccount() {
 		user.sessionId = responseData.SessionID
 		user.customerId = responseData.CustomerID
 
-		fmt.Println("Logged in")
-		user.getPaymentId()
+		fmt.Println("Thread " + user.thread + ": Logged In Successful")
+		_, err := user.getPaymentId()
+		if err != nil {
+			return
+		}
 	}
 
 }
@@ -59,7 +62,7 @@ func (user *HibbettBase) loginRequest(jsonData []byte) (res []byte, err error) {
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodPost,
-		Url:    "https://hibbett-mobileapi.prolific.io/users/login",
+		Url:    ServerURL + "login",
 		Headers: http.Header{
 			"Accept":             {"*/*"},
 			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},

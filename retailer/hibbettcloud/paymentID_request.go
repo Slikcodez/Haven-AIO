@@ -50,7 +50,7 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 		Init(user.thread, user.account)
 		return
 	}
-	payments = user.unmarshalPaymentIDs((res))
+	payments = user.unmarshalPaymentIDs(res)
 	return
 }
 
@@ -68,6 +68,7 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 			if payment.PaymentObject.Number == user.four {
 				user.paymentId = payment.ID
 				user.paymentType = payment.Type
+				fmt.Println("Thread " + user.thread + ": Got PaymentID")
 			} else {
 				fmt.Println("Error, no valid paymentID found")
 			}
