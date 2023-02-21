@@ -72,7 +72,7 @@ func TlsRequest(params TLSParams) ([]byte, error) {
 	}
 
 	if params.ExpectedResponse == resp.StatusCode {
-		return (readBytes), nil
+		return readBytes, nil
 	} else {
 		return nil, errors.New("error with expected response status code")
 	}
