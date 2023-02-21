@@ -27,6 +27,27 @@ type PreCart struct {
 	PreferredPaymentMethodId string `json:"preferredPaymentMethodId"`
 }
 
+type PreCartRes struct {
+	CartID    string `json:"id"`
+	SessionID string `json:"bmSessionToken"`
+}
+
+func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCartRes) {
+
+	err = json.Unmarshal([]byte(res), &precart)
+	if err != nil {
+		fmt.Println(err)
+		constants.LogStatus(user.thread, "Error Parsing JSON")
+		Init(user.thread, user.account)
+	} else {
+		user.cartId = precart.CartID
+		user.sessionId = precart.SessionID
+		constants.LogStatus(user.thread, "Initialized Precart")
+	}
+
+	return
+}
+
 func (user *HibbettBase) preCart() {
 
 	precart := &PreCart{
@@ -70,8 +91,7 @@ func (user *HibbettBase) preCart() {
 		fmt.Println("Error logging in")
 		Init(user.thread, user.account)
 	} else {
-		fmt.Println(res)
-		constants.LogStatus(user.thread, "Initialized Precart")
+		user.unmarshalPreCart(res)
 	}
 
 }

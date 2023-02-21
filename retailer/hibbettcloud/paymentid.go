@@ -62,8 +62,7 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 	err := json.Unmarshal([]byte(payload), &payments)
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Parsing JSON")
-		return
-		// Init(self.thread, self.account)
+		Init(user.thread, user.account)
 	} else {
 
 		for _, payment := range payments {
