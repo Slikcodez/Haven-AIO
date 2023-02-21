@@ -19,7 +19,12 @@ func ReadSettingsFile(filepath string) (Settings, error) {
 	if err != nil {
 		return Settings{}, err
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 
 	// Read the contents of the file
 	contents, err := ioutil.ReadAll(file)
