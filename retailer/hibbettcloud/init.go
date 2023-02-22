@@ -58,7 +58,6 @@ func Init(thread string, account string) {
 	user.getProxy()
 	user.client = client.GetTLS(user.proxy)
 	user.loginAccount()
-
 }
 
 func (user *HibbettBase) getProxy() {

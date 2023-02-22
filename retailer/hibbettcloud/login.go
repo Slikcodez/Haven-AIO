@@ -2,7 +2,6 @@ package hibbettcloud
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/client"
 	"main/constants"
 	"strings"
@@ -32,34 +31,34 @@ func (user *HibbettBase) loginAccount() {
 
 	jsonData, err := json.Marshal(creds)
 	if err != nil {
-		fmt.Println("Error marshaling JSON: ", err)
+		constants.LogStatus(user.thread, "Error Parsing JSON")
 		return
 	}
 
 	res, err := user.loginRequest(jsonData)
 	if err != nil {
-		fmt.Println("Error logging in")
+		constants.LogStatus(user.thread, "Error Logging In")
 		Init(user.thread, user.account)
 	}
 	var responseData Session
 	err = json.Unmarshal([]byte(res), &responseData)
 	if err != nil {
-		fmt.Println("Error parsing JSON:", err)
+		constants.LogStatus(user.thread, "Error Parsing JSON")
 		Init(user.thread, user.account)
 	} else {
 		user.sessionId = responseData.SessionID
 		user.customerId = responseData.CustomerID
 
-		fmt.Println("Thread " + user.thread + ": Logged In Successful")
-		_, err := user.getPaymentId()
-		if err != nil {
-			return
-		}
+		constants.LogStatus(user.thread, "Logged In Successfully")
+		user.getPaymentId()
 	}
 
 }
 
 func (user *HibbettBase) loginRequest(jsonData []byte) (res []byte, err error) {
+
+	constants.LogStatus(user.thread, "Logging In")
+
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodPost,

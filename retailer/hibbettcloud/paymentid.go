@@ -2,7 +2,6 @@ package hibbettcloud
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/client"
 	"main/constants"
 
@@ -25,6 +24,9 @@ type Payment struct {
 }
 
 func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
+
+	constants.LogStatus(user.thread, "Getting PaymentID")
+
 	res, err := client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodGet,
@@ -47,7 +49,7 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 	},
 	)
 	if err != nil {
-		fmt.Println("Error getting payment id")
+		constants.LogStatus(user.thread, "Error Getting PaymentID")
 		Init(user.thread, user.account)
 		return
 	}
@@ -59,9 +61,8 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 
 	err := json.Unmarshal([]byte(payload), &payments)
 	if err != nil {
-		fmt.Println("Error parsing JSON:", err)
-		return
-		// Init(self.thread, self.account)
+		constants.LogStatus(user.thread, "Error Parsing JSON")
+		Init(user.thread, user.account)
 	} else {
 
 		for _, payment := range payments {
@@ -69,9 +70,10 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 			if payment.PaymentObject.Number == user.four {
 				user.paymentId = payment.ID
 				user.paymentType = payment.Type
-				fmt.Println("Thread " + user.thread + ": Got PaymentID")
+				constants.LogStatus(user.thread, "Got PaymentID")
+				user.preCart()
 			} else {
-				fmt.Println("Error, no valid paymentID found")
+				constants.LogStatus(user.thread, "Error, No Valid PaymentID Found")
 			}
 		}
 
