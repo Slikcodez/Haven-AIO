@@ -11,6 +11,8 @@ type Settings struct {
 	Webhook string `json:"webhook"`
 }
 
+var GlobalSettings Settings = Settings{}
+
 // ReadSettingsFile reads a JSON file located at the given filepath and
 // returns a Settings object with the values from the file.
 func ReadSettingsFile(filepath string) (Settings, error) {
@@ -37,6 +39,8 @@ func ReadSettingsFile(filepath string) (Settings, error) {
 	if err := json.Unmarshal(contents, &settings); err != nil {
 		return Settings{}, err
 	}
+
+	GlobalSettings = settings
 
 	return settings, nil
 }
