@@ -2,6 +2,7 @@ package webhook
 
 import (
 	"log"
+	"main/constants"
 
 	"github.com/gtuk/discordwebhook"
 )
@@ -9,24 +10,32 @@ import (
 func DiscordWebhook(wh WebhookStruct) {
 
 	embeds := discordwebhook.Embed{
-		Title:       &wh.Title,
 		Description: &wh.Message,
 		Color:       &wh.Color,
 		Fields:      &wh.Fields,
+		Author: &discordwebhook.Author{
+			Name:    &authorName,
+			IconUrl: &botImage,
+		},
 	}
-	// log.Println(embeds)
 	embedArray := []discordwebhook.Embed{embeds}
-	log.Println(embedArray)
 	message := discordwebhook.Message{
 		Username:  &botUsername,
 		AvatarUrl: &botImage,
 		Embeds:    &embedArray,
 	}
 
-	err := discordwebhook.SendMessage(webhookString, message)
-	if err != nil {
-		log.Println(err)
-		log.Fatalf("Failure in webhook")
-
+	if (wh.Webhook) == "" {
+		err := discordwebhook.SendMessage(constants.GlobalSettings.Webhook, message)
+		if err != nil {
+			log.Println(err)
+		}
+	} else {
+		err := discordwebhook.SendMessage(wh.Webhook, message)
+		if err != nil {
+			log.Println(err)
+		} else {
+			log.Println("successful webhook")
+		}
 	}
 }
