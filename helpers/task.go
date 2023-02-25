@@ -35,6 +35,11 @@ func readAccountsFile() ([]string, error) {
 }
 
 func InitTask() {
+
+	go func() {
+
+	}()
+
 	var accounts, _ = readAccountsFile()
 
 	var wg sync.WaitGroup

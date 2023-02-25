@@ -38,17 +38,19 @@ func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCar
 	if err != nil {
 		fmt.Println(err)
 		constants.LogStatus(user.thread, "Error Parsing JSON")
+		fmt.Println(err)
 		Init(user.thread, user.account)
 	} else {
 		user.cartId = precart.CartID
 		user.sessionId = precart.SessionID
-		constants.LogStatus(user.thread, "Initialized Precart")
+		constants.LogStatus(user.thread, "Carted")
+
 	}
 
 	return
 }
 
-func (user *HibbettBase) preCart() {
+func (user *HibbettBase) preCart(sku string) {
 
 	precart := &PreCart{
 		PreferredBillingAddressId:  "main",
@@ -70,13 +72,13 @@ func (user *HibbettBase) preCart() {
 				Product: struct {
 					Id string `json:"id"`
 				}{
-					Id: "30897839",
+					Id: sku,
 				},
 				CustomerId: user.customerId,
 				Sku: struct {
 					Id string `json:"id"`
 				}{
-					Id: "30897839",
+					Id: sku,
 				},
 			},
 		},
@@ -85,7 +87,7 @@ func (user *HibbettBase) preCart() {
 	}
 	jsonData, _ := json.Marshal(precart)
 
-	constants.LogStatus(user.thread, "Initializing Precart")
+	constants.LogStatus(user.thread, "Initializing Cart")
 	res, err := user.preCartRequest(jsonData)
 	if err != nil {
 		fmt.Println("Error logging in")
