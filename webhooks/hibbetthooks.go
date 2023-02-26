@@ -89,7 +89,7 @@ func SendWebhook(size string, sku string, price float64, number string, imageURL
 					},
 					{
 						Name:   "Order Number",
-						Value:  fmt.Sprintf("||%d||", number),
+						Value:  fmt.Sprintf("||%s||", number),
 						Inline: true,
 					},
 				},
