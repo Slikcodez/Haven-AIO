@@ -1,10 +1,12 @@
 package hibbettcloud
 
 import (
+	"encoding/json"
 	"fmt"
 	http "github.com/bogdanfinn/fhttp"
 	"main/client"
 	"main/constants"
+	webhook "main/webhooks"
 	"strings"
 )
 
@@ -23,17 +25,63 @@ func (user *HibbettBase) placeOrder() {
 		if StatusCode == "400" {
 			if strings.Contains("Invalid", constants.UnmarshalRequestError(err.Error(), "body")) {
 				constants.LogStatus(user.thread, "Invalid Card Cvv")
+				constants.Declines++
 			} else {
 				constants.LogStatus(user.thread, "Declined")
+				constants.Declines++
 			}
-			constants.LogStatus(user.thread, "Invalid CVV")
 
-			fmt.Println(constants.UnmarshalRequestError(err.Error(), "body"))
 		}
 	} else {
-		fmt.Println(res)
+		var Order Order
+		if err := json.Unmarshal(res, &Order); err != nil {
+			panic(err)
+		}
+
+		fmt.Printf("Total: %.2f\n", Order.Total)
+		fmt.Printf("MasterID: %s\n", Order.OrderItems[0].MasterID)
+		fmt.Printf("ID: %s\n", Order.ID)
+		err := webhook.SendWebhook(Order.OrderItems[0].Sku.Size, Order.OrderItems[0].MasterID, Order.Total, Order.ID, Order.OrderItems[0].Product.ImageResources["0001-0"][0].URL, user.email)
+		if err != nil {
+			return
+		}
 	}
 
+}
+
+type Order struct {
+	Adjustments []struct{} `json:"adjustments"`
+	ID          string     `json:"id"`
+	OrderItems  []struct {
+		MasterID string `json:"masterId"`
+		Product  struct {
+			ImageResources map[string][]struct {
+				URL   string `json:"url"`
+				Usage string `json:"usage"`
+			} `json:"imageResources"`
+			Name string `json:"name"`
+		} `json:"product"`
+		Sku struct {
+			AvailableQuantity interface{} `json:"availableQuantity"`
+			Color             struct {
+				ID           string `json:"id"`
+				ImagePattern struct {
+					URL   string `json:"url"`
+					Usage string `json:"usage"`
+				} `json:"imagePattern"`
+				Label string `json:"label"`
+			} `json:"color"`
+			DiscountedPrice interface{} `json:"discountedPrice"`
+			FinalPrice      string      `json:"finalPrice"`
+			ID              string      `json:"id"`
+			ListPrice       string      `json:"listPrice"`
+			ProductID       string      `json:"productId"`
+			SelectedOptions []struct{}  `json:"selectedOptions"`
+			Size            string      `json:"size"`
+			SkuNumber       string      `json:"skuNumber"`
+		} `json:"sku"`
+	} `json:"orderItems"`
+	Total float64 `json:"total"`
 }
 
 func (user *HibbettBase) placeOrderRequest() (res []byte, err error) {

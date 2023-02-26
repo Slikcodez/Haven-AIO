@@ -1,32 +1,28 @@
 package constants
 
-import (
-	"fmt"
-	"syscall"
-	"unsafe"
-)
+var Carts = 0
+var Declines = 0
+var Checkouts = 0
+var Version = "0.5.95"
 
-var carts = 0
-var declines = 0
-var checkouts = 0
-var version = 0
+func runCmdLoop() {
+	go func() {
+		CmdTitles()
+	}()
+	return
+}
 
 func CmdTitles() {
-	for {
+	/*for {
 
-		kernel32, err := syscall.NewLazyDLL("kernel32.dll")
-		if err != nil {
-			panic(err)
-		}
+		kernel32 := syscall.NewLazyDLL("kernel32.dll")
 
-		proc, err := kernel32.NewProc("SetConsoleTitleW")
-		if err != nil {
-			panic(err)
-		}
+		proc := kernel32.NewProc("SetConsoleTitleW")
 
-		ret, _, err := proc.Call(uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(fmt.Sprintf("Haven %d | Carts %d | Checkouts %d | Declines %d", version, carts, checkouts, declines)))))
+		ret, _, err := proc.Call(uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(fmt.Sprintf("Haven %d | Carts %d | Checkouts %d | Declines %d", Version, Carts, Checkouts, Declines)))))
 		if ret == 0 {
 			panic(err)
 		}
-	}
+		time.Sleep(1 * time.Second)
+	}*/
 }

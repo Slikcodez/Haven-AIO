@@ -44,6 +44,7 @@ func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCar
 		user.cartId = precart.CartID
 		user.sessionId = precart.SessionID
 		constants.LogStatus(user.thread, "Carted")
+		constants.Carts++
 		user.addEmail()
 
 	}

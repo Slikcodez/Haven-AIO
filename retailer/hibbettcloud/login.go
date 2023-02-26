@@ -2,7 +2,6 @@ package hibbettcloud
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/client"
 	"main/constants"
 	"strings"
@@ -41,7 +40,6 @@ func (user *HibbettBase) loginAccount() {
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Logging In")
 		time.Sleep(10 * time.Second)
-		fmt.Println(err)
 		Init(user.thread, user.account)
 	}
 	var responseData Session
