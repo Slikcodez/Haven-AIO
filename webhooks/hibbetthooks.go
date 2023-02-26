@@ -110,7 +110,7 @@ func SendWebhook(size string, sku string, price float64, number string, imageURL
 		return err
 	}
 
-	webhookURL := "https://discord.com/api/webhooks/1000256795178188880/XU4MwiESSV-aJvtzveXjPXxjVETBAgGk3XS6s6eakECfxU_WnYmgVY-5NJGni2mpoR7X"
+	webhookURL := constants.GlobalSettings.Webhook
 	req, err := http.NewRequest("POST", webhookURL, bytes.NewBuffer(body))
 	if err != nil {
 		return err
