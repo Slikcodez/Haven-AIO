@@ -37,7 +37,7 @@ func readAccountsFile() ([]string, error) {
 func InitTask() {
 
 	go func() {
-
+		ConnectHibbett()
 	}()
 
 	var accounts, _ = readAccountsFile()

@@ -34,11 +34,8 @@ func LaunchCli() {
 
 }
 
-func HibbettMonitor() {
-	HavenCloud := make(chan string)
-}
-
 func main() {
+
 	// Defines webhook and key values in constants.go file
 	settings, err := constants.ReadSettingsFile("./configs/settings.json")
 	if err != nil {

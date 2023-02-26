@@ -44,13 +44,16 @@ func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCar
 		user.cartId = precart.CartID
 		user.sessionId = precart.SessionID
 		constants.LogStatus(user.thread, "Carted")
+		user.addEmail()
 
 	}
 
 	return
 }
 
-func (user *HibbettBase) preCart(sku string) {
+func (user *HibbettBase) preCart(productInfo string) {
+
+	sku := strings.Split(productInfo, ":")[0]
 
 	precart := &PreCart{
 		PreferredBillingAddressId:  "main",
