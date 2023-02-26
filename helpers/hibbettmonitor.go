@@ -91,9 +91,9 @@ func ConnectHibbett() {
 		}
 
 		for _, valueSku := range skus {
-			if valueSku == msg.Sku {
+			if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) {
 				for _, valueSize := range sizes {
-					if valueSize == msg.Size {
+					if strings.ToUpper(valueSize) == strings.ToUpper(msg.Size) {
 						go func() {
 							channels.HavenCloud <- fmt.Sprintf("%s:%s:%s", msg.Variant, msg.Size, msg.Sku)
 						}()

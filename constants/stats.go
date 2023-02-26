@@ -1,11 +1,17 @@
 package constants
 
+import (
+	"fmt"
+	"time"
+	"unsafe"
+)
+
 var Carts = 0
 var Declines = 0
 var Checkouts = 0
 var Version = "0.5.95"
 
-func runCmdLoop() {
+func RunCmdLoop() {
 	go func() {
 		CmdTitles()
 	}()
@@ -13,7 +19,7 @@ func runCmdLoop() {
 }
 
 func CmdTitles() {
-	/*for {
+	for {
 
 		kernel32 := syscall.NewLazyDLL("kernel32.dll")
 
@@ -24,5 +30,5 @@ func CmdTitles() {
 			panic(err)
 		}
 		time.Sleep(1 * time.Second)
-	}*/
+	}
 }

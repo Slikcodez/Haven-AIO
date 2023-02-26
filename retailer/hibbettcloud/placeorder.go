@@ -37,10 +37,7 @@ func (user *HibbettBase) placeOrder() {
 		if err := json.Unmarshal(res, &Order); err != nil {
 			panic(err)
 		}
-
-		fmt.Printf("Total: %.2f\n", Order.Total)
-		fmt.Printf("MasterID: %s\n", Order.OrderItems[0].MasterID)
-		fmt.Printf("ID: %s\n", Order.ID)
+		
 		err := webhook.SendWebhook(Order.OrderItems[0].Sku.Size, Order.OrderItems[0].MasterID, Order.Total, Order.ID, Order.OrderItems[0].Product.ImageResources["0001-0"][0].URL, user.email)
 		if err != nil {
 			return
