@@ -93,7 +93,15 @@ func (user *HibbettBase) preCart(productInfo string) {
 	constants.LogStatus(user.thread, "Initializing Cart")
 	res, err := user.preCartRequest(jsonData)
 	if err != nil {
-		fmt.Println("Error logging in")
+
+		status_code := constants.UnmarshalRequestError(err.Error(), "status")
+		body := constants.UnmarshalRequestError(err.Error(), "body")
+		if status_code == "403" {
+			constants.LogStatus(user.thread, "PX Blocked While Carting")
+		}
+		if status_code == "400" {
+			constants.LogStatus(user.thread, body)
+		}
 		Init(user.thread, user.account)
 	} else {
 		user.unmarshalPreCart(res)

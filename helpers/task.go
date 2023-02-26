@@ -39,6 +39,7 @@ func InitTask() {
 	go func() {
 		ConnectHibbett()
 	}()
+	time.Sleep(500 * time.Millisecond)
 
 	var accounts, _ = readAccountsFile()
 

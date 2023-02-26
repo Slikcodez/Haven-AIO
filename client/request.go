@@ -1,6 +1,7 @@
 package client
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"log"
@@ -74,7 +75,17 @@ func TlsRequest(params TLSParams) ([]byte, error) {
 	if params.ExpectedResponse == resp.StatusCode {
 		return readBytes, nil
 	} else {
-		return nil, errors.New(resp.StatusCode)
+		type response struct {
+			StatusCode int    `json:"statusCode"`
+			Body       []byte `json:"body"`
+		}
+		errorMsg := response{StatusCode: resp.StatusCode, Body: readBytes}
+		jsonBytes, err := json.Marshal(errorMsg)
+		if err != nil {
+			return nil, err
+		}
+		errorMsgString := string(jsonBytes)
+		return nil, errors.New(errorMsgString)
 	}
 
 }
