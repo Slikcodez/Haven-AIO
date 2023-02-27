@@ -2,7 +2,6 @@ package constants
 
 import (
 	"fmt"
-	"syscall"
 	"time"
 	"unsafe"
 )
@@ -20,6 +19,7 @@ func RunCmdLoop() {
 }
 
 func CmdTitles() {
+
 	for {
 
 		kernel32 := syscall.NewLazyDLL("kernel32.dll")

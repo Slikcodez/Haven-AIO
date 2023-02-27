@@ -8,33 +8,38 @@ import (
 	"log"
 	"main/channels"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
 type Message struct {
-	Size    string `json:"Size"`
-	Sku     string `json:"Sku"`
-	Variant string `json:"Varient"`
+	Size    float32 `json:"Size"`
+	Sku     string  `json:"Sku"`
+	Variant string  `json:"Varient"`
 }
 
-func getSizes() []string {
+func getSizes() []float32 {
 	content, err := ioutil.ReadFile("./configs/hibbett/sizes.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-
 	}
 	// Split the content by line
 	lines := strings.Split(string(content), "\n")
 	// Create an empty slice to store the sizes
-	var sizes []string
-	// Loop through the lines and convert each to an integer
+	var sizes []float32
+	// Loop through the lines and convert each to a float32
 	for _, line := range lines {
+		line = strings.TrimSpace(line) // Remove leading/trailing whitespace
 		if line == "" {
 			continue // Skip empty lines
 		}
-		sizes = append(sizes, line)
+		f, err := strconv.ParseFloat(line, 32)
+		if err != nil {
+			fmt.Println("Error converting to float32:", err)
+			continue // Skip non-numeric lines
+		}
+		sizes = append(sizes, float32(f))
 	}
-
 	return sizes
 }
 
@@ -93,7 +98,7 @@ func ConnectHibbett() {
 		for _, valueSku := range skus {
 			if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) {
 				for _, valueSize := range sizes {
-					if strings.ToUpper(valueSize) == strings.ToUpper(msg.Size) {
+					if valueSize == msg.Size {
 						go func() {
 							channels.HavenCloud <- fmt.Sprintf("%s:%s:%s", msg.Variant, msg.Size, msg.Sku)
 						}()
