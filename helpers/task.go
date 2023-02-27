@@ -35,6 +35,12 @@ func readAccountsFile() ([]string, error) {
 }
 
 func InitTask() {
+
+	go func() {
+		ConnectHibbett()
+	}()
+	time.Sleep(500 * time.Millisecond)
+
 	var accounts, _ = readAccountsFile()
 
 	var wg sync.WaitGroup

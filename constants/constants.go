@@ -1,6 +1,10 @@
 package constants
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"strconv"
+)
 
 const ServersUrl string = `http://38.102.8.15`
 const HibbettURL string = `https://hibbett-mobileapi.prolific.io/users/`
@@ -13,4 +17,23 @@ func LogStatus(thread string, message string) {
 
 func GetPaymentIdUrlString(customerID string) string {
 	return HibbettURL + customerID + "/payment_methods"
+}
+
+func UnmarshalRequestError(req string, resptype string) string {
+	type response struct {
+		StatusCode int    `json:"statusCode"`
+		Body       []byte `json:"body"`
+	}
+
+	var resp response
+	err := json.Unmarshal([]byte(req), &resp)
+	if err != nil {
+		panic(err)
+	}
+
+	if resptype == "body" {
+		return string(resp.Body)
+	} else {
+		return strconv.Itoa(resp.StatusCode)
+	}
 }

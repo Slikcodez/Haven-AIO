@@ -5,6 +5,7 @@ import (
 	"main/client"
 	"main/constants"
 	"strings"
+	"time"
 
 	http "github.com/bogdanfinn/fhttp"
 )
@@ -38,6 +39,7 @@ func (user *HibbettBase) loginAccount() {
 	res, err := user.loginRequest(jsonData)
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Logging In")
+		time.Sleep(10 * time.Second)
 		Init(user.thread, user.account)
 	}
 	var responseData Session
@@ -64,16 +66,17 @@ func (user *HibbettBase) loginRequest(jsonData []byte) (res []byte, err error) {
 		Method: http.MethodPost,
 		Url:    constants.HibbettURL + "login",
 		Headers: http.Header{
-			"Accept":             {"*/*"},
-			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":    {"en-US;q=1.0"},
-			"Connection":         {"keep-alive"},
-			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
-			"version":            {"6.3.0"},
-			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"4"}, //1 also works
-			"User-Agent":         {user.userAgent},
+			"Accept":              {"*/*"},
+			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":     {"en-US;q=1.0"},
+			"Connection":          {"keep-alive"},
+			"Content-Type":        {"application/json; charset=utf-8"},
+			"platform":            {"ios"},
+			"version":             {"6.3.0"},
+			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION":  {"2"},
+			"X-PX-ORIGINAL-TOKEN": {"2:14265r7t638yiuhojnlkm;afs"}, //1 also works
+			"User-Agent":          {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),
 		ExpectedResponse: 200,

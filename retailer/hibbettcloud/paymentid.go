@@ -59,7 +59,7 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 
 func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment) {
 
-	err := json.Unmarshal([]byte(payload), &payments)
+	err := json.Unmarshal(payload, &payments)
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Parsing JSON")
 		Init(user.thread, user.account)
@@ -71,7 +71,7 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 				user.paymentId = payment.ID
 				user.paymentType = payment.Type
 				constants.LogStatus(user.thread, "Got PaymentID")
-				user.preCart()
+				user.Monitor()
 			} else {
 				constants.LogStatus(user.thread, "Error, No Valid PaymentID Found")
 			}
