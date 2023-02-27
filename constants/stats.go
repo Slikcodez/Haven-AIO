@@ -2,6 +2,7 @@ package constants
 
 import (
 	"fmt"
+	"syscall"
 	"time"
 	"unsafe"
 )
@@ -9,7 +10,7 @@ import (
 var Carts = 0
 var Declines = 0
 var Checkouts = 0
-var Version = "0.5.95"
+var Version = "0.5.97"
 
 func RunCmdLoop() {
 	go func() {
