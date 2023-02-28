@@ -11,7 +11,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type Message struct {
@@ -68,23 +67,10 @@ func getSkus() []string {
 
 func ConnectHibbett() {
 
-	u := url.URL{Scheme: "ws", Host: "38.102.8.15:12141", Path: ""}
-
-	// Set up WebSocket connection
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
-	if err != nil {
-		log.Println("Monitor Connection error:")
-		time.Sleep(30 * time.Second)
-		ConnectHibbett()
-	}
-	defer c.Close()
-	fmt.Println("Connected to Haven Cloud Monitor")
-
 	for {
-		sizes := getSizes()
 		skus := getSkus()
 
-		u := url.URL{Scheme: "ws", Host: "38.102.8.15:12142", Path: ""}
+		u := url.URL{Scheme: "ws", Host: "38.102.8.15:12145", Path: ""}
 
 		// Set up WebSocket connection
 		c, _, _ := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -106,22 +92,11 @@ func ConnectHibbett() {
 			}
 
 			for _, valueSku := range skus {
-				if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) {
-					for _, valueSize := range sizes {
-						if valueSize == msg.Size {
-							go func() {
-								channels.HavenCloud <- fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)
-							}()
-						}
-					}
-				}
-				for _, valueSku := range skus {
-					if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) && constants.GlobalSettings.MinSize <= msg.Size {
+				if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) && constants.GlobalSettings.MinSize <= msg.Size {
 
-						go func() {
-							channels.HavenCloud <- fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)
-						}()
-					}
+					go func() {
+						channels.HavenCloud <- fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)
+					}()
 
 				}
 			}
