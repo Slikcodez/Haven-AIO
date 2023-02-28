@@ -93,7 +93,7 @@ func ConnectHibbett() {
 			// Read incoming message
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				log.Println("read error:", err)
+				log.Println("read error:")
 				break
 			}
 
