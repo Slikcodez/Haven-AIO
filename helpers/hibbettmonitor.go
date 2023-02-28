@@ -7,18 +7,20 @@ import (
 	"io/ioutil"
 	"log"
 	"main/channels"
+	"main/constants"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Message struct {
-	Size    float64 `json:"Size"`
+	Size    float32 `json:"Size"`
 	Sku     string  `json:"Sku"`
 	Variant string  `json:"Varient"`
 }
 
-func getSizes() []float64 {
+func getSizes() []float32 {
 	content, err := ioutil.ReadFile("./configs/hibbett/sizes.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
@@ -26,19 +28,19 @@ func getSizes() []float64 {
 	// Split the content by line
 	lines := strings.Split(string(content), "\n")
 	// Create an empty slice to store the sizes
-	var sizes []float64
+	var sizes []float32
 	// Loop through the lines and convert each to a float32
 	for _, line := range lines {
 		line = strings.TrimSpace(line) // Remove leading/trailing whitespace
 		if line == "" {
 			continue // Skip empty lines
 		}
-		f, err := strconv.ParseFloat(line, 64)
+		f, err := strconv.ParseFloat(line, 32)
 		if err != nil {
 			fmt.Println("Error converting to float32:", err)
 			continue // Skip non-numeric lines
 		}
-		sizes = append(sizes, float64(f))
+		sizes = append(sizes, float32(f))
 	}
 	return sizes
 }
@@ -65,6 +67,19 @@ func getSkus() []string {
 }
 
 func ConnectHibbett() {
+
+	u := url.URL{Scheme: "ws", Host: "38.102.8.15:12141", Path: ""}
+
+	// Set up WebSocket connection
+	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	if err != nil {
+		log.Println("Monitor Connection error:")
+		time.Sleep(30 * time.Second)
+		ConnectHibbett()
+	}
+	defer c.Close()
+	fmt.Println("Connected to Haven Cloud Monitor")
+
 	for {
 		sizes := getSizes()
 		skus := getSkus()
@@ -73,9 +88,6 @@ func ConnectHibbett() {
 
 		// Set up WebSocket connection
 		c, _, _ := websocket.DefaultDialer.Dial(u.String(), nil)
-
-		defer c.Close()
-		fmt.Println("Connected to Haven Cloud Monitor")
 
 		for {
 			// Read incoming message
@@ -98,14 +110,21 @@ func ConnectHibbett() {
 					for _, valueSize := range sizes {
 						if valueSize == msg.Size {
 							go func() {
-								channels.HavenCloud <- fmt.Sprintf("%s:%s:%s", msg.Variant, msg.Size, msg.Sku)
+								channels.HavenCloud <- fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)
 							}()
 						}
 					}
 				}
-			}
+				for _, valueSku := range skus {
+					if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) && constants.GlobalSettings.MinSize <= msg.Size {
 
+						go func() {
+							channels.HavenCloud <- fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)
+						}()
+					}
+
+				}
+			}
 		}
 	}
-
 }
