@@ -89,28 +89,33 @@ func (user *HibbettBase) preCart(productInfo string) {
 		CustomerId:               user.customerId,
 		PreferredPaymentMethodId: user.paymentId,
 	}
+
 	jsonData, _ := json.Marshal(precart)
 
 	constants.LogStatus(user.thread, "Initializing Cart")
-	res, err := user.preCartRequest(jsonData)
-	if err != nil {
+	_, err := user.preCartRequest(jsonData)
 
-		status_code, err := constants.UnmarshalRequestError(err.Error(), "status")
+	if err != nil && !strings.Contains(err.Error(), "statusCode\":403") {
+
+		statusCode, err := constants.UnmarshalRequestError(err.Error(), "status")
 		body, err := constants.UnmarshalRequestError(err.Error(), "body")
 		if err != nil {
 			constants.LogStatus(user.thread, "ERROR AT CART")
-			user.loginAccount()
-		} else {
-			if status_code == "403" {
-				constants.LogStatus(user.thread, "PX Blocked While Carting")
-			}
-			if status_code == "400" {
-				constants.LogStatus(user.thread, body)
-			}
 			Init(user.thread, user.account)
+		} else {
+			if statusCode == "403" {
+				constants.LogStatus(user.thread, "PX Blocked While Carting")
+				Init(user.thread, user.account)
+			} else if statusCode == "400" {
+				constants.LogStatus(user.thread, body)
+				Init(user.thread, user.account)
+			} else {
+				user.placeOrder()
+			}
 		}
 	} else {
-		user.unmarshalPreCart(res)
+		constants.LogStatus(user.thread, "PX Blocked While Carting")
+		Init(user.thread, user.account)
 	}
 
 }
