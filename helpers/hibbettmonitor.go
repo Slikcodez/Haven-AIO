@@ -84,7 +84,7 @@ func ConnectHibbett() {
 		sizes := getSizes()
 		skus := getSkus()
 
-		u := url.URL{Scheme: "ws", Host: "38.102.8.15:12141", Path: ""}
+		u := url.URL{Scheme: "ws", Host: "38.102.8.15:12142", Path: ""}
 
 		// Set up WebSocket connection
 		c, _, _ := websocket.DefaultDialer.Dial(u.String(), nil)
