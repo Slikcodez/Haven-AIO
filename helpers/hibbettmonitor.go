@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
@@ -9,6 +10,7 @@ import (
 	"main/channels"
 	"main/constants"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -45,21 +47,20 @@ func getSizes() []float32 {
 }
 
 func getSkus() []string {
-	content, err := ioutil.ReadFile("./configs/hibbett/skus.txt")
+	file, err := os.Open("./configs/hibbett/skus.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-
+		return []string{} // return empty slice in case of error
 	}
-	// Split the content by line
-	lines := strings.Split(string(content), "\n")
-	// Create an empty slice to store the sizes
+	defer file.Close()
+
+	// Create an empty slice to store the skus
 	var skus []string
-	// Loop through the lines and convert each to an integer
-	for _, line := range lines {
-		if line == "" {
-			continue // Skip empty lines
-		}
-		skus = append(skus, line)
+
+	// Create a scanner to read the file line by line
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		skus = append(skus, scanner.Text())
 	}
 
 	return skus
@@ -92,7 +93,7 @@ func ConnectHibbett() {
 			}
 			log.Println(msg.Sku, "RESTOCKED")
 			for _, valueSku := range skus {
-				if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) && constants.GlobalSettings.MinSize <= msg.Size {
+				if valueSku == msg.Sku && constants.GlobalSettings.MinSize <= msg.Size {
 
 					go func() {
 						channels.HavenCloud <- fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)
