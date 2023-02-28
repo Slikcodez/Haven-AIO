@@ -90,7 +90,7 @@ func ConnectHibbett() {
 				log.Println("json error:", err)
 				continue
 			}
-
+			log.Println(msg.Sku, "RESTOCKED")
 			for _, valueSku := range skus {
 				if strings.ToUpper(valueSku) == strings.ToUpper(msg.Sku) && constants.GlobalSettings.MinSize <= msg.Size {
 

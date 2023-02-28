@@ -17,13 +17,18 @@ func (user *HibbettBase) placeOrder() {
 	res, err := user.placeOrderRequest()
 
 	if err != nil {
-		StatusCode := constants.UnmarshalRequestError(err.Error(), "status")
+		StatusCode, err1 := constants.UnmarshalRequestError(err.Error(), "status")
+		if err1 != nil {
+			constants.LogStatus(user.thread, "Error While Placing Order")
+			user.loginAccount()
+		}
 
 		if StatusCode == "403" {
 			constants.LogStatus(user.thread, "PX Blocked While Placing Order")
 		}
 		if StatusCode == "400" {
-			if strings.Contains("Invalid", constants.UnmarshalRequestError(err.Error(), "body")) {
+			body1, _ := constants.UnmarshalRequestError(err.Error(), "body")
+			if strings.Contains("Invalid", body1) {
 				constants.LogStatus(user.thread, "Invalid Card Cvv")
 				constants.Declines++
 			} else {
@@ -34,12 +39,12 @@ func (user *HibbettBase) placeOrder() {
 		}
 	} else {
 		var Order Order
-		if err := json.Unmarshal(res, &Order); err != nil {
-			panic(err)
+		if errRL := json.Unmarshal(res, &Order); err != nil {
+			panic(errRL)
 		}
-		
-		err := webhook.SendWebhook(Order.OrderItems[0].Sku.Size, Order.OrderItems[0].MasterID, Order.Total, Order.ID, Order.OrderItems[0].Product.ImageResources["0001-0"][0].URL, user.email)
-		if err != nil {
+
+		errorWH := webhook.SendWebhook(Order.OrderItems[0].Sku.Size, Order.OrderItems[0].MasterID, Order.Total, Order.ID, Order.OrderItems[0].Product.ImageResources["0001-0"][0].URL, user.email)
+		if errorWH != nil {
 			return
 		}
 	}

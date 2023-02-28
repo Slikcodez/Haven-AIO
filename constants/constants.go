@@ -19,7 +19,7 @@ func GetPaymentIdUrlString(customerID string) string {
 	return HibbettURL + customerID + "/payment_methods"
 }
 
-func UnmarshalRequestError(req string, resptype string) string {
+func UnmarshalRequestError(req string, resptype string) (string, error) {
 	type response struct {
 		StatusCode int    `json:"statusCode"`
 		Body       []byte `json:"body"`
@@ -28,12 +28,12 @@ func UnmarshalRequestError(req string, resptype string) string {
 	var resp response
 	err := json.Unmarshal([]byte(req), &resp)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	if resptype == "body" {
-		return string(resp.Body)
+		return string(resp.Body), nil
 	} else {
-		return strconv.Itoa(resp.StatusCode)
+		return strconv.Itoa(resp.StatusCode), nil
 	}
 }

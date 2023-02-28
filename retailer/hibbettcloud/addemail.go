@@ -20,7 +20,7 @@ func (user *HibbettBase) addEmail() {
 	jsondata, _ := json.Marshal(addemail)
 	_, err := user.addEmailRequest(jsondata)
 	if err != nil {
-		joe := constants.UnmarshalRequestError(err.Error(), "body")
+		joe, _ := constants.UnmarshalRequestError(err.Error(), "body")
 		fmt.Println(joe)
 	} else {
 		constants.LogStatus(user.thread, "Added Order Information")
