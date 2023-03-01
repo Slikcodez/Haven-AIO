@@ -98,8 +98,8 @@ func (user *HibbettBase) preCart(productInfo string) {
 	if err != nil && !strings.Contains(err.Error(), "statusCode\":403") {
 
 		statusCode, err := constants.UnmarshalRequestError(err.Error(), "status")
-		body, err := constants.UnmarshalRequestError(err.Error(), "body")
-		if err != nil {
+		body, err1 := constants.UnmarshalRequestError(err.Error(), "body")
+		if err1 != nil {
 			constants.LogStatus(user.thread, "ERROR AT CART")
 			Init(user.thread, user.account)
 		} else {
