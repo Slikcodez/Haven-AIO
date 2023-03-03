@@ -75,7 +75,7 @@ func (user *HibbettBase) loginRequest(jsonData []byte) (res []byte, err error) {
 			"version":             {"6.3.0"},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
 			"X-PX-AUTHORIZATION":  {"2"},
-			"X-PX-ORIGINAL-TOKEN": {"2:14265r7t638yiuhojnlkm;afs"}, //1 also works
+			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()}, //1 also works
 			"User-Agent":          {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),

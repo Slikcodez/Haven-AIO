@@ -41,7 +41,7 @@ func Init(thread string, account string) {
 		account:     account,
 		paymentId:   "",
 		token:       "",
-		userAgent:   fmt.Sprintf("hibbett | CG/6.3.0 (com.hibbett.hibbett-sports; build:%v; iOS 16.0.0)", rand.Intn(15000)+1),
+		userAgent:   fmt.Sprintf("Hibbett | CG/6.3.0 (com.hibbett.hibbett-sports; build:%v; iOS 16.0.3) Alamofire/5.0.0-rc.3", rand.Intn(15000)+1),
 		paymentType: "",
 		sessionId:   "",
 		sessionEX:   "",

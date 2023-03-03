@@ -42,7 +42,7 @@ func (user *HibbettBase) placeOrder() {
 		if errRL := json.Unmarshal(res, &Order); err != nil {
 			panic(errRL)
 		}
-
+		fmt.Println("Checked Out")
 		errorWH := webhook.SendWebhook(Order.OrderItems[0].Sku.Size, Order.OrderItems[0].MasterID, Order.Total, Order.ID, Order.OrderItems[0].Product.ImageResources["0001-0"][0].URL, user.email)
 		if errorWH != nil {
 			return
@@ -92,17 +92,18 @@ func (user *HibbettBase) placeOrderRequest() (res []byte, err error) {
 		Method: http.MethodPost,
 		Url:    fmt.Sprintf(`https://hibbett-mobileapi.prolific.io/ecommerce/cart/%s/place_order?cardSecurityCode=%s&customer=%s&phone=&oneTapCheckout=true&firstName=&optIn=false`, user.cartId, user.cvv, user.customerId),
 		Headers: http.Header{
-			"Accept":             {"*/*"},
-			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":    {"en-US;q=1.0"},
-			"Connection":         {"keep-alive"},
-			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
-			"version":            {"6.3.0"},
-			"Authorization":      {"Bearer " + user.sessionId},
-			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"2"}, //1 also works
-			"User-Agent":         {user.userAgent},
+			"Accept":              {"*/*"},
+			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":     {"en-US;q=1.0"},
+			"Connection":          {"keep-alive"},
+			"Content-Type":        {"application/json; charset=utf-8"},
+			"platform":            {"ios"},
+			"version":             {"6.3.0"},
+			"Authorization":       {"Bearer " + user.sessionId},
+			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
+			"X-PX-ORIGINAL-TOKEN": {"2:14265r7t638yiuhojnlkm;afs"},
+			"User-Agent":          {user.userAgent},
 		},
 		Body:             nil,
 		ExpectedResponse: 200,

@@ -3,7 +3,9 @@ package constants
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"strconv"
+	"time"
 )
 
 const ServersUrl string = `http://38.102.8.15`
@@ -36,4 +38,26 @@ func UnmarshalRequestError(req string, resptype string) (string, error) {
 	} else {
 		return strconv.Itoa(resp.StatusCode), nil
 	}
+}
+
+func RandString() string {
+	rand.Seed(time.Now().UnixNano())
+
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	minLen := 5
+	maxLen := 10
+	length := rand.Intn(maxLen-minLen+1) + minLen
+
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+
+	c := make([]byte, length)
+	for i := range b {
+		c[i] = letters[rand.Intn(len(letters))]
+	}
+
+	stringer := fmt.Sprintf(`%s;%s`, b, c)
+	return stringer
 }

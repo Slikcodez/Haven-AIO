@@ -75,20 +75,19 @@ func ConnectHibbett() {
 
 		// Set up WebSocket connection
 		c, _, _ := websocket.DefaultDialer.Dial(u.String(), nil)
-
 		for {
 			// Read incoming message
-			_, message, err := c.ReadMessage()
-			if err != nil {
+			_, message, err54 := c.ReadMessage()
+			if err54 != nil {
 				log.Println("read error:")
 				break
 			}
 
 			// Extract JSON data from message
 			var msg Message
-			err = json.Unmarshal(message, &msg)
-			if err != nil {
-				log.Println("json error:", err)
+			err23 := json.Unmarshal(message, &msg)
+			if err23 != nil {
+				log.Println("json error:", err23)
 				continue
 			}
 			log.Println(msg.Sku, "RESTOCKED")

@@ -89,33 +89,28 @@ func (user *HibbettBase) preCart(productInfo string) {
 		CustomerId:               user.customerId,
 		PreferredPaymentMethodId: user.paymentId,
 	}
-
 	jsonData, _ := json.Marshal(precart)
 
 	constants.LogStatus(user.thread, "Initializing Cart")
-	_, err := user.preCartRequest(jsonData)
+	res, err123 := user.preCartRequest(jsonData)
+	if err123 != nil {
 
-	if err != nil && !strings.Contains(err.Error(), "statusCode\":403") {
-
-		statusCode, err := constants.UnmarshalRequestError(err.Error(), "status")
-		body, err1 := constants.UnmarshalRequestError(err.Error(), "body")
-		if err1 != nil {
+		status_code, err11 := constants.UnmarshalRequestError(err123.Error(), "status")
+		body, _ := constants.UnmarshalRequestError(err123.Error(), "body")
+		if err11 != nil {
 			constants.LogStatus(user.thread, "ERROR AT CART")
-			Init(user.thread, user.account)
+			user.loginAccount()
 		} else {
-			if statusCode == "403" {
+			if status_code == "403" {
 				constants.LogStatus(user.thread, "PX Blocked While Carting")
-				Init(user.thread, user.account)
-			} else if statusCode == "400" {
-				constants.LogStatus(user.thread, body)
-				Init(user.thread, user.account)
-			} else {
-				user.placeOrder()
 			}
+			if status_code == "400" {
+				constants.LogStatus(user.thread, body)
+			}
+			Init(user.thread, user.account)
 		}
 	} else {
-		constants.LogStatus(user.thread, "PX Blocked While Carting")
-		Init(user.thread, user.account)
+		user.unmarshalPreCart(res)
 	}
 
 }
@@ -127,22 +122,25 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 		Method: http.MethodPost,
 		Url:    `https://hibbett-mobileapi.prolific.io/ecommerce/cart/one_tap?cardSecurityCode=` + user.cvv,
 		Headers: http.Header{
-			"Accept":             {"*/*"},
-			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":    {"en-US;q=1.0"},
-			"Connection":         {"keep-alive"},
-			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
-			"version":            {"6.3.0"},
-			"Authorization":      {"Bearer " + user.sessionId},
-			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"2"}, //1 also works
-			"User-Agent":         {user.userAgent},
+			"Accept":              {"*/*"},
+			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":     {"es-US;q=1.0"},
+			"Connection":          {"keep-alive"},
+			"Content-Type":        {"application/json; charset=utf-8"},
+			"platform":            {"ios"},
+			"version":             {"6.3.0"},
+			"Authorization":       {"Bearer " + user.sessionId},
+			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
+			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()},
+			"X-PX-BYPASS-REASON":  nil,
+			"User-Agent":          {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),
 		ExpectedResponse: 200,
 	},
 	)
+	fmt.Println(err.Error())
 
 	return
 }
