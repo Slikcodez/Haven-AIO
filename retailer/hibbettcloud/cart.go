@@ -99,13 +99,18 @@ func (user *HibbettBase) preCart(productInfo string) {
 		body, _ := constants.UnmarshalRequestError(err123.Error(), "body")
 		if err11 != nil {
 			constants.LogStatus(user.thread, "ERROR AT CART")
+			fmt.Println(err11)
 			user.loginAccount()
 		} else {
 			if status_code == "403" {
 				constants.LogStatus(user.thread, "PX Blocked While Carting")
 			}
 			if status_code == "400" {
-				constants.LogStatus(user.thread, body)
+				if strings.Contains(body, "One Tap") {
+					constants.LogStatus(user.thread, "Unable to create cart")
+				} else {
+					constants.LogStatus(user.thread, body)
+				}
 			}
 			Init(user.thread, user.account)
 		}
@@ -124,7 +129,7 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 		Headers: http.Header{
 			"Accept":              {"*/*"},
 			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":     {"es-US;q=1.0"},
+			"Accept-Language":     {"es-US;q=0.9"},
 			"Connection":          {"keep-alive"},
 			"Content-Type":        {"application/json; charset=utf-8"},
 			"platform":            {"ios"},
@@ -133,14 +138,13 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
 			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
 			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()},
-			"X-PX-BYPASS-REASON":  nil,
+			"Cache-Control":       {"max-age=0"},
 			"User-Agent":          {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),
 		ExpectedResponse: 200,
 	},
 	)
-	fmt.Println(err.Error())
 
 	return
 }

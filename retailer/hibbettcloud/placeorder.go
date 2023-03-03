@@ -34,6 +34,7 @@ func (user *HibbettBase) placeOrder() {
 			} else {
 				constants.LogStatus(user.thread, "Declined")
 				constants.Declines++
+				user.loginAccount()
 			}
 
 		}
@@ -102,7 +103,8 @@ func (user *HibbettBase) placeOrderRequest() (res []byte, err error) {
 			"Authorization":       {"Bearer " + user.sessionId},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
 			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
-			"X-PX-ORIGINAL-TOKEN": {"2:14265r7t638yiuhojnlkm;afs"},
+			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()},
+			"Cache-Control":       {"max-age=0"},
 			"User-Agent":          {user.userAgent},
 		},
 		Body:             nil,

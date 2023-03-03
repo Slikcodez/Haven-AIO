@@ -10,7 +10,6 @@ func (user *HibbettBase) Monitor() {
 
 	for {
 		sku := <-channels.HavenCloud
-
 		user.preCart(sku)
 	}
 }
