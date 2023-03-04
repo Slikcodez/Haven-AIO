@@ -32,7 +32,7 @@ type PreCartRes struct {
 	SessionID string `json:"bmSessionToken"`
 }
 
-func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCartRes) {
+func (user *HibbettBase) unmarshalPreCart(res []byte, sku string) (err error, precart PreCartRes) {
 
 	err = json.Unmarshal([]byte(res), &precart)
 	if err != nil {
@@ -43,7 +43,7 @@ func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCar
 	} else {
 		user.cartId = precart.CartID
 		user.sessionId = precart.SessionID
-		constants.LogStatus(user.thread, "Carted")
+		constants.LogStatus(user.thread, "Carted "+sku)
 		constants.Carts++
 		user.addEmail()
 
@@ -115,7 +115,7 @@ func (user *HibbettBase) preCart(productInfo string) {
 			Init(user.thread, user.account)
 		}
 	} else {
-		user.unmarshalPreCart(res)
+		user.unmarshalPreCart(res, sku)
 	}
 
 }

@@ -32,7 +32,7 @@ func (user *HibbettBase) placeOrder() {
 				constants.LogStatus(user.thread, "Invalid Card Cvv")
 				constants.Declines++
 			} else {
-				constants.LogStatus(user.thread, "Declined")
+				constants.LogStatus(user.thread, "Error While Placing Order")
 				fmt.Println(body1)
 				constants.Declines++
 				user.loginAccount()
@@ -89,6 +89,7 @@ type Order struct {
 }
 
 func (user *HibbettBase) placeOrderRequest() (res []byte, err error) {
+
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodPost,
