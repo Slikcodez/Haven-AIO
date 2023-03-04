@@ -96,7 +96,7 @@ func ConnectHibbett() {
 				for _, valueSku := range skus {
 					if valueSku == msg.Sku && constants.GlobalSettings.MinSize <= msg.Size {
 
-						channels.HavenCloud.SafeEmit("restock", fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)).Wait()
+						channels.HavenCloud.Emit("*", fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku))
 
 					}
 				}

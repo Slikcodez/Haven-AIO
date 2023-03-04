@@ -33,6 +33,7 @@ func (user *HibbettBase) placeOrder() {
 				constants.Declines++
 			} else {
 				constants.LogStatus(user.thread, "Declined")
+				fmt.Println(body1)
 				constants.Declines++
 				user.loginAccount()
 			}

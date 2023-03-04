@@ -2,6 +2,7 @@ package hibbettcloud
 
 import (
 	"encoding/json"
+	"fmt"
 	"main/client"
 	"main/constants"
 
@@ -25,10 +26,6 @@ type Payment struct {
 
 func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 
-	if user.four != "" {
-		user.Monitor()
-	}
-
 	constants.LogStatus(user.thread, "Getting PaymentID")
 
 	res, err := client.TlsRequest(client.TLSParams{
@@ -42,6 +39,7 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 			"Connection":          {"keep-alive"},
 			"Content-Type":        {"application/json; charset=utf-8"},
 			"platform":            {"ios"},
+			"Authorization":       {"Bearer " + user.sessionId},
 			"version":             {"6.3.0"},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
 			"X-PX-AUTHORIZATION":  {"2"},
@@ -81,6 +79,7 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 				}
 			}
 		} else {
+			fmt.Println(user.paymentId)
 			user.Monitor()
 		}
 
