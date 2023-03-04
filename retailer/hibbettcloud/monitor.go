@@ -8,8 +8,8 @@ import (
 func (user *HibbettBase) Monitor() {
 	constants.LogStatus(user.thread, "Listening For Restocks")
 
+	channels.HavenCloud.On("restock", func(sku string) { user.preCart(sku) })
+
 	for {
-		sku := <-channels.HavenCloud
-		user.preCart(sku)
 	}
 }

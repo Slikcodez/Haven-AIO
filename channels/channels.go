@@ -1,3 +1,7 @@
 package channels
 
-var HavenCloud = make(chan string)
+import (
+	"github.com/jiyeyuran/go-eventemitter"
+)
+
+var HavenCloud = eventemitter.NewEventEmitter(eventemitter.WithMaxListeners(300))

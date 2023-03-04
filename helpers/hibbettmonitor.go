@@ -83,23 +83,24 @@ func ConnectHibbett() {
 				break
 			}
 
-			// Extract JSON data from message
-			var msg Message
-			err23 := json.Unmarshal(message, &msg)
-			if err23 != nil {
-				log.Println("json error:", err23)
-				continue
-			}
-			log.Println(msg.Sku, "RESTOCKED")
-			for _, valueSku := range skus {
-				if valueSku == msg.Sku && constants.GlobalSettings.MinSize <= msg.Size {
+			go func() {
 
-					go func() {
-						channels.HavenCloud <- fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)
-					}()
-
+				// Extract JSON data from message
+				var msg Message
+				err23 := json.Unmarshal(message, &msg)
+				if err23 != nil {
+					log.Println("json error:", err23)
+					return
 				}
-			}
+				log.Println(msg.Sku, "RESTOCKED")
+				for _, valueSku := range skus {
+					if valueSku == msg.Sku && constants.GlobalSettings.MinSize <= msg.Size {
+
+						channels.HavenCloud.SafeEmit("restock", fmt.Sprintf("%s:%f:%s", msg.Variant, msg.Size, msg.Sku)).Wait()
+
+					}
+				}
+			}()
 		}
 	}
 }
