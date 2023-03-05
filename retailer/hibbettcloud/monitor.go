@@ -5,11 +5,15 @@ import (
 	"main/constants"
 )
 
+func (user *HibbettBase) recieve(sku string) {
+	user.preCart(sku)
+}
+
 func (user *HibbettBase) Monitor() {
 	constants.LogStatus(user.thread, "Listening For Restocks")
 	for {
-		sku := <-channels.HavenCloud
-
-		user.preCart(sku)
+		event := <-channels.HavenCloud.Once(constants.RandString())
+		user.preCart(event.Args[0].(string))
 	}
+
 }

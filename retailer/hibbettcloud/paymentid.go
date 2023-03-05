@@ -2,6 +2,7 @@ package hibbettcloud
 
 import (
 	"encoding/json"
+	"fmt"
 	"main/client"
 	"main/constants"
 
@@ -32,17 +33,18 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 		Method: http.MethodGet,
 		Url:    constants.GetPaymentIdUrlString(user.customerId),
 		Headers: http.Header{
-			"Accept":             {"*/*"},
-			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":    {"en-US;q=1.0"},
-			"Connection":         {"keep-alive"},
-			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
-			"version":            {"6.3.0"},
-			"Authorization":      {"Bearer " + user.sessionId},
-			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"4"}, //1 also works
-			"User-Agent":         {user.userAgent},
+			"Accept":              {"*/*"},
+			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":     {"en-US;q=1.0"},
+			"Connection":          {"keep-alive"},
+			"Content-Type":        {"application/json; charset=utf-8"},
+			"platform":            {"ios"},
+			"Authorization":       {"Bearer " + user.sessionId},
+			"version":             {"6.3.0"},
+			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION":  {"2"},
+			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()}, //1 also works
+			"User-Agent":          {user.userAgent},
 		},
 		Body:             nil,
 		ExpectedResponse: 200,
@@ -64,17 +66,21 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 		constants.LogStatus(user.thread, "Error Parsing JSON")
 		Init(user.thread, user.account)
 	} else {
+		if user.paymentId == "" {
+			for _, payment := range payments {
 
-		for _, payment := range payments {
-
-			if payment.PaymentObject.Number == user.four {
-				user.paymentId = payment.ID
-				user.paymentType = payment.Type
-				constants.LogStatus(user.thread, "Got PaymentID")
-				user.Monitor()
-			} else {
-				constants.LogStatus(user.thread, "Error, No Valid PaymentID Found")
+				if payment.PaymentObject.Number == user.four {
+					user.paymentId = payment.ID
+					user.paymentType = payment.Type
+					constants.LogStatus(user.thread, "Got PaymentID")
+					user.Monitor()
+				} else {
+					constants.LogStatus(user.thread, "Error, No Valid PaymentID Found")
+				}
 			}
+		} else {
+			fmt.Println(user.paymentId)
+			user.Monitor()
 		}
 
 	}

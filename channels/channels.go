@@ -1,3 +1,5 @@
 package channels
 
-var HavenCloud = make(chan string)
+import "github.com/olebedev/emitter"
+
+var HavenCloud = &emitter.Emitter{}

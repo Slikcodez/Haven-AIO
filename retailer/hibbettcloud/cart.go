@@ -32,7 +32,7 @@ type PreCartRes struct {
 	SessionID string `json:"bmSessionToken"`
 }
 
-func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCartRes) {
+func (user *HibbettBase) unmarshalPreCart(res []byte, sku string) (err error, precart PreCartRes) {
 
 	err = json.Unmarshal([]byte(res), &precart)
 	if err != nil {
@@ -43,7 +43,7 @@ func (user *HibbettBase) unmarshalPreCart(res []byte) (err error, precart PreCar
 	} else {
 		user.cartId = precart.CartID
 		user.sessionId = precart.SessionID
-		constants.LogStatus(user.thread, "Carted")
+		constants.LogStatus(user.thread, "Carted "+sku)
 		constants.Carts++
 		user.addEmail()
 
@@ -92,20 +92,30 @@ func (user *HibbettBase) preCart(productInfo string) {
 	jsonData, _ := json.Marshal(precart)
 
 	constants.LogStatus(user.thread, "Initializing Cart")
-	res, err := user.preCartRequest(jsonData)
-	if err != nil {
+	res, err123 := user.preCartRequest(jsonData)
+	if err123 != nil {
 
-		status_code := constants.UnmarshalRequestError(err.Error(), "status")
-		body := constants.UnmarshalRequestError(err.Error(), "body")
-		if status_code == "403" {
-			constants.LogStatus(user.thread, "PX Blocked While Carting")
+		status_code, err11 := constants.UnmarshalRequestError(err123.Error(), "status")
+		body, _ := constants.UnmarshalRequestError(err123.Error(), "body")
+		if err11 != nil {
+			constants.LogStatus(user.thread, "ERROR AT CART")
+			fmt.Println(err11)
+			user.loginAccount()
+		} else {
+			if status_code == "403" {
+				constants.LogStatus(user.thread, "PX Blocked While Carting")
+			}
+			if status_code == "400" {
+				if strings.Contains(body, "One Tap") {
+					constants.LogStatus(user.thread, "Unable to create cart")
+				} else {
+					constants.LogStatus(user.thread, body)
+				}
+			}
+			Init(user.thread, user.account)
 		}
-		if status_code == "400" {
-			constants.LogStatus(user.thread, body)
-		}
-		Init(user.thread, user.account)
 	} else {
-		user.unmarshalPreCart(res)
+		user.unmarshalPreCart(res, sku)
 	}
 
 }
@@ -117,17 +127,19 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 		Method: http.MethodPost,
 		Url:    `https://hibbett-mobileapi.prolific.io/ecommerce/cart/one_tap?cardSecurityCode=` + user.cvv,
 		Headers: http.Header{
-			"Accept":             {"*/*"},
-			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":    {"en-US;q=1.0"},
-			"Connection":         {"keep-alive"},
-			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
-			"version":            {"6.3.0"},
-			"Authorization":      {"Bearer " + user.sessionId},
-			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION": {"2"}, //1 also works
-			"User-Agent":         {user.userAgent},
+			"Accept":              {"*/*"},
+			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":     {"es-US;q=0.9"},
+			"Connection":          {"keep-alive"},
+			"Content-Type":        {"application/json; charset=utf-8"},
+			"platform":            {"ios"},
+			"version":             {"6.3.0"},
+			"Authorization":       {"Bearer " + user.sessionId},
+			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
+			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()},
+			"Cache-Control":       {"max-age=0"},
+			"User-Agent":          {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),
 		ExpectedResponse: 200,

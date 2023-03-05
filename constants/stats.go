@@ -2,7 +2,6 @@ package constants
 
 import (
 	"fmt"
-	"syscall"
 	"time"
 	"unsafe"
 )
@@ -33,4 +32,5 @@ func CmdTitles() {
 		}
 		time.Sleep(1 * time.Second)
 	}
+
 }
