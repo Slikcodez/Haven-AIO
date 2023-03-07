@@ -10,7 +10,7 @@ import (
 var Carts = 0
 var Declines = 0
 var Checkouts = 0
-var Version = "0.5.97"
+var Version = "0.5.992- req 2/3 fix"
 
 func RunCmdLoop() {
 	go func() {
