@@ -8,6 +8,7 @@ import (
 	"main/constants"
 	webhook "main/webhooks"
 	"strings"
+	"time"
 )
 
 func (user *HibbettBase) placeOrder() {
@@ -25,6 +26,12 @@ func (user *HibbettBase) placeOrder() {
 
 		if StatusCode == "403" {
 			constants.LogStatus(user.thread, "PX Blocked While Placing Order")
+			if time.Now().Second() < 15 {
+				user.getProxy()
+				user.placeOrder()
+			} else {
+				user.loginAccount()
+			}
 		}
 		if StatusCode == "400" {
 			body1, _ := constants.UnmarshalRequestError(err.Error(), "body")
@@ -90,6 +97,8 @@ type Order struct {
 
 func (user *HibbettBase) placeOrderRequest() (res []byte, err error) {
 
+	pxBase := "4"
+
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodPost,
@@ -104,8 +113,8 @@ func (user *HibbettBase) placeOrderRequest() (res []byte, err error) {
 			"version":             {"6.3.0"},
 			"Authorization":       {"Bearer " + user.sessionId},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
-			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()},
+			"X-PX-AUTHORIZATION":  {pxBase}, //1 also works
+			"X-PX-ORIGINAL-TOKEN": {pxBase + ":" + constants.RandString()},
 			"Cache-Control":       {"max-age=0"},
 			"User-Agent":          {user.userAgent},
 		},

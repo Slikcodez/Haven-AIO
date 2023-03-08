@@ -6,6 +6,7 @@ import (
 	"main/client"
 	"main/constants"
 	"strings"
+	"time"
 )
 
 type email struct {
@@ -19,6 +20,16 @@ func (user *HibbettBase) addEmail() {
 	jsondata, _ := json.Marshal(addemail)
 	_, err := user.addEmailRequest(jsondata)
 	if err != nil {
+		if strings.Contains(err.Error(), "403") {
+			constants.LogStatus(user.thread, "PX Block While Adding Order Info")
+			if time.Now().Second() < 15 {
+				user.getProxy()
+				user.addEmail()
+			} else {
+				user.loginAccount()
+			}
+
+		}
 		user.loginAccount()
 
 	} else {
@@ -29,6 +40,8 @@ func (user *HibbettBase) addEmail() {
 }
 
 func (user *HibbettBase) addEmailRequest(jsonData []byte) (res []byte, err error) {
+
+	pxBase := "4"
 
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
@@ -44,8 +57,8 @@ func (user *HibbettBase) addEmailRequest(jsonData []byte) (res []byte, err error
 			"version":             {"6.3.0"},
 			"Authorization":       {"Bearer " + user.sessionId},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
-			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()},
+			"X-PX-AUTHORIZATION":  {pxBase}, //1 also works
+			"X-PX-ORIGINAL-TOKEN": {pxBase + ":" + constants.RandString()},
 			"Cache-Control":       {"max-age=0"},
 			"User-Agent":          {user.userAgent},
 		},

@@ -6,7 +6,9 @@ import (
 	http "github.com/bogdanfinn/fhttp"
 	"main/client"
 	"main/constants"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 type PreCart struct {
@@ -104,6 +106,13 @@ func (user *HibbettBase) preCart(productInfo string) {
 		} else {
 			if status_code == "403" {
 				constants.LogStatus(user.thread, "PX Blocked While Carting")
+
+				if time.Now().Second() < 15 {
+					user.getProxy()
+					user.preCart(productInfo)
+				} else {
+					user.loginAccount()
+				}
 			}
 			if status_code == "400" {
 				if strings.Contains(body, "One Tap") {
@@ -122,6 +131,11 @@ func (user *HibbettBase) preCart(productInfo string) {
 
 func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error) {
 
+	pxvals := make([]string, 0)
+	pxvals = append(pxvals, "2")
+	pxvals = append(pxvals, "4")
+	pxbase := pxvals[rand.Intn(len(pxvals))]
+
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodPost,
@@ -136,8 +150,8 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 			"version":             {"6.3.0"},
 			"Authorization":       {"Bearer " + user.sessionId},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION":  {"2"}, //1 also works
-			"X-PX-ORIGINAL-TOKEN": {"2:" + constants.RandString()},
+			"X-PX-AUTHORIZATION":  {pxbase}, //1 also works
+			"X-PX-ORIGINAL-TOKEN": {pxbase + ":" + constants.RandString()},
 			"Cache-Control":       {"max-age=0"},
 			"User-Agent":          {user.userAgent},
 		},
