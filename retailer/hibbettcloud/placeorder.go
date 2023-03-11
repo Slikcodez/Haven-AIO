@@ -39,10 +39,20 @@ func (user *HibbettBase) placeOrder() {
 				constants.LogStatus(user.thread, "Invalid Card Cvv")
 				constants.Declines++
 			} else {
-				constants.LogStatus(user.thread, "Error While Placing Order")
-				fmt.Println(body1)
-				constants.Declines++
-				user.loginAccount()
+				if strings.Contains(body1, "available") {
+					if time.Now().Second() < 15 {
+						constants.LogStatus(user.thread, "Item OOS, Retrying...")
+						user.getProxy()
+						user.placeOrder()
+					} else {
+						constants.LogStatus(user.thread, "Item OOS")
+						user.loginAccount()
+					}
+				} else {
+					constants.LogStatus(user.thread, "Error While Placing Order")
+					fmt.Println(body1)
+					user.loginAccount()
+				}
 			}
 
 		}
