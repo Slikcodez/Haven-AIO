@@ -49,7 +49,26 @@ func InitTask() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			hibbettcloud.Init(strconv.Itoa(ThreadNumTask), account)
+			hibbettcloud.Init(strconv.Itoa(ThreadNumTask), account, "")
+
+		}()
+		time.Sleep(500 * time.Millisecond)
+		ThreadNumTask++
+	}
+	wg.Wait()
+}
+
+func InitInitTask() {
+
+	var accounts, _ = readAccountsFile()
+
+	var wg sync.WaitGroup
+	ThreadNumTask := 1
+	for _, account := range accounts {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			hibbettcloud.Init(strconv.Itoa(ThreadNumTask), account, "initial")
 
 		}()
 		time.Sleep(500 * time.Millisecond)

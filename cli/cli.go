@@ -51,6 +51,7 @@ func SelectTask() string {
 Pick A Mode!
 1. Hibbett Cloud
 2. Hibbett Account Generator
+3. Hibbett Initial
 
 >>>  `)
 
@@ -61,9 +62,12 @@ Pick A Mode!
 		return ""
 	}
 
-	if mode != "1" {
-		return "2"
-	} else {
+	if mode == "1" {
 		return "1"
+	} else {
+		if mode == "3" {
+			return "3"
+		}
+		return "2"
 	}
 }

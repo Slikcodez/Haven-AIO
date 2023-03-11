@@ -2,7 +2,6 @@ package hibbettcloud
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/client"
 	"main/constants"
 
@@ -52,7 +51,7 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 	)
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Getting PaymentID")
-		Init(user.thread, user.account)
+		Init(user.thread, user.account, user.mode)
 		return
 	}
 	payments = user.unmarshalPaymentIDs(res)
@@ -64,7 +63,7 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 	err := json.Unmarshal(payload, &payments)
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Parsing JSON")
-		Init(user.thread, user.account)
+		Init(user.thread, user.account, user.mode)
 	} else {
 		if user.paymentId == "" {
 			for _, payment := range payments {
@@ -79,7 +78,6 @@ func (user *HibbettBase) unmarshalPaymentIDs(payload []byte) (payments []Payment
 				}
 			}
 		} else {
-			fmt.Println(user.paymentId)
 			user.Monitor()
 		}
 

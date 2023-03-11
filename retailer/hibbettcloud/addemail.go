@@ -41,7 +41,7 @@ func (user *HibbettBase) addEmail() {
 
 func (user *HibbettBase) addEmailRequest(jsonData []byte) (res []byte, err error) {
 
-	pxBase := "4"
+	pxBase := "2"
 
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
@@ -59,7 +59,7 @@ func (user *HibbettBase) addEmailRequest(jsonData []byte) (res []byte, err error
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
 			"X-PX-AUTHORIZATION":  {pxBase}, //1 also works
 			"X-PX-ORIGINAL-TOKEN": {pxBase + ":" + constants.RandString()},
-			"Cache-Control":       {"max-age=0"},
+			"Cache-Control":       {constants.RandString() + ", no-cache, no-store, must-revalidate"},
 			"User-Agent":          {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),

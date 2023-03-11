@@ -41,7 +41,7 @@ func (user *HibbettBase) unmarshalPreCart(res []byte, sku string) (err error, pr
 		fmt.Println(err)
 		constants.LogStatus(user.thread, "Error Parsing JSON")
 		fmt.Println(err)
-		Init(user.thread, user.account)
+		Init(user.thread, user.account, user.mode)
 	} else {
 		user.cartId = precart.CartID
 		user.sessionId = precart.SessionID
@@ -121,7 +121,7 @@ func (user *HibbettBase) preCart(productInfo string) {
 					constants.LogStatus(user.thread, body)
 				}
 			}
-			Init(user.thread, user.account)
+			Init(user.thread, user.account, user.mode)
 		}
 	} else {
 		user.unmarshalPreCart(res, sku)
@@ -133,7 +133,7 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 
 	pxvals := make([]string, 0)
 	pxvals = append(pxvals, "2")
-	pxvals = append(pxvals, "4")
+	//pxvals = append(pxvals, "4")
 	pxbase := pxvals[rand.Intn(len(pxvals))]
 
 	res, err = client.TlsRequest(client.TLSParams{
@@ -152,7 +152,7 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
 			"X-PX-AUTHORIZATION":  {pxbase}, //1 also works
 			"X-PX-ORIGINAL-TOKEN": {pxbase + ":" + constants.RandString()},
-			"Cache-Control":       {"max-age=0"},
+			"Cache-Control":       {constants.RandString() + ", no-cache, no-store, must-revalidate"},
 			"User-Agent":          {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),

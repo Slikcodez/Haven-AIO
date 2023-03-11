@@ -7,9 +7,10 @@ import (
 )
 
 type Settings struct {
-	Key     string  `json:"key"`
-	Webhook string  `json:"webhook"`
-	MinSize float32 `json:"min-size"`
+	Key       string  `json:"key"`
+	Webhook   string  `json:"webhook"`
+	MinSize   float32 `json:"min-size"`
+	StartTime int     `json:"start-time"`
 }
 
 var GlobalSettings Settings = Settings{}

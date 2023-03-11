@@ -22,8 +22,10 @@ func LaunchCli() {
 
 		if res == "1" {
 			helpers.InitTask()
-		} else {
+		} else if res != "3" {
 			fmt.Println("Not Incorporated yet")
+		} else {
+			helpers.InitInitTask()
 		}
 
 	} else {

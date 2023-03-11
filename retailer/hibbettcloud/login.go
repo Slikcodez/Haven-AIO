@@ -40,13 +40,13 @@ func (user *HibbettBase) loginAccount() {
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Logging In")
 		time.Sleep(10 * time.Second)
-		Init(user.thread, user.account)
+		Init(user.thread, user.account, user.mode)
 	}
 	var responseData Session
 	err = json.Unmarshal([]byte(res), &responseData)
 	if err != nil {
 		constants.LogStatus(user.thread, "Error Parsing JSON")
-		Init(user.thread, user.account)
+		Init(user.thread, user.account, user.mode)
 	} else {
 		user.sessionId = responseData.SessionID
 		user.customerId = responseData.CustomerID

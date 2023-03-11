@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"main/client"
+	"main/constants"
 	"math/rand"
 	"os"
 	"strings"
@@ -32,16 +33,20 @@ type HibbettBase struct {
 	sku         string
 	cartId      string
 	cvv         string
+	mode        string
 }
 
-func Init(thread string, account string) {
+func Init(thread string, account string, mode string) {
 
 	user := HibbettBase{
-		thread:      thread,
-		account:     account,
-		paymentId:   "",
-		token:       "",
-		userAgent:   fmt.Sprintf("Hibbett | CG/6.3.0 (com.hibbett.hibbett-sports; build:%v; iOS 16.0.3) Alamofire/5.0.0-rc.3", rand.Intn(15000)+1),
+		thread:    thread,
+		account:   account,
+		mode:      mode,
+		paymentId: "",
+		token:     "",
+		//userAgent:   fmt.Sprintf("Hibbett | CG/6.3.0 (com.hibbett.hibbett-sports; build:%v; iOS 16.0.3) Alamofire/5.0.0-rc.3", rand.Intn(15000)+1),
+		userAgent: fmt.Sprintf("Hibbett" + constants.RandString() + constants.RandString()),
+
 		paymentType: "",
 		sessionId:   "",
 		sessionEX:   "",
