@@ -12,28 +12,29 @@ import (
 )
 
 type HibbettBase struct {
-	client      client.HttpClient
-	thread      string
-	account     string
-	paymentId   string
-	token       string
-	userAgent   string
-	paymentType string
-	sessionId   string
-	sessionEX   string
-	customerId  string
-	email       string
-	password    string
-	four        string
-	checkedOut  bool
-	genningPx   bool
-	proxy       string
-	initialSku  string
-	detected    bool
-	sku         string
-	cartId      string
-	cvv         string
-	mode        string
+	client           client.HttpClient
+	thread           string
+	account          string
+	paymentId        string
+	token            string
+	userAgent        string
+	paymentType      string
+	sessionId        string
+	sessionEX        string
+	customerId       string
+	email            string
+	password         string
+	four             string
+	checkedOut       bool
+	genningPx        bool
+	proxy            string
+	initialSku       string
+	detected         bool
+	sku              string
+	cartId           string
+	cvv              string
+	mode             string
+	headerPlaceOrder string
 }
 
 func Init(thread string, account string, mode string) {
@@ -47,17 +48,18 @@ func Init(thread string, account string, mode string) {
 		//userAgent:   fmt.Sprintf("Hibbett | CG/6.3.0 (com.hibbett.hibbett-sports; build:%v; iOS 16.0.3) Alamofire/5.0.0-rc.3", rand.Intn(15000)+1),
 		userAgent: fmt.Sprintf("Hibbett" + constants.RandString() + constants.RandString()),
 
-		paymentType: "",
-		sessionId:   "",
-		sessionEX:   "",
-		customerId:  "",
-		email:       strings.Split(account, ":")[0],
-		password:    strings.Split(account, ":")[1],
-		four:        strings.Split(account, ":")[2],
-		cvv:         strings.Split(account, ":")[3],
-		checkedOut:  false,
-		proxy:       "",
-		sku:         "",
+		paymentType:      "",
+		sessionId:        "",
+		sessionEX:        "",
+		headerPlaceOrder: "",
+		customerId:       "",
+		email:            strings.Split(account, ":")[0],
+		password:         strings.Split(account, ":")[1],
+		four:             strings.Split(account, ":")[2],
+		cvv:              strings.Split(account, ":")[3],
+		checkedOut:       false,
+		proxy:            "",
+		sku:              "",
 	}
 
 	user.getProxy()
