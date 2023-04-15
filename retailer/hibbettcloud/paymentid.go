@@ -37,7 +37,7 @@ func (user *HibbettBase) getPaymentId() (payments []Payment, err error) {
 			"Accept-Language":     {"en-US;q=1.0"},
 			"Connection":          {"keep-alive"},
 			"Content-Type":        {"application/json; charset=utf-8"},
-			"platform":            {"ios"},
+			"platform":            {"android"},
 			"Authorization":       {"Bearer " + user.sessionId},
 			"version":             {"6.3.0"},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},

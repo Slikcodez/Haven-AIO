@@ -46,7 +46,7 @@ func (user *HibbettBase) unmarshalPreCart(res []byte, sku string) (err error, pr
 		user.sessionId = precart.SessionID
 		constants.LogStatus(user.thread, "Carted "+sku)
 		constants.Carts++
-		user.addEmail()
+		user.addEmail(sku)
 
 	}
 
@@ -144,7 +144,7 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 			"Accept-Language":    {"es-US;q=0.9"},
 			"Connection":         {"keep-alive"},
 			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
+			"platform":           {"android"},
 			"version":            {"6.3.2"},
 			"Authorization":      {"Bearer " + user.sessionId},
 			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},

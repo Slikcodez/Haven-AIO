@@ -71,7 +71,7 @@ func (user *HibbettBase) loginRequest(jsonData []byte) (res []byte, err error) {
 			"Accept-Language":     {"en-US;q=1.0"},
 			"Connection":          {"keep-alive"},
 			"Content-Type":        {"application/json; charset=utf-8"},
-			"platform":            {"ios"},
+			"platform":            {"android"},
 			"version":             {"6.3.0"},
 			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
 			"X-PX-AUTHORIZATION":  {"2"},

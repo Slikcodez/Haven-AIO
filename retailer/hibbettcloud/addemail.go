@@ -13,7 +13,7 @@ type email struct {
 	Email string `json:"email"`
 }
 
-func (user *HibbettBase) addEmail() {
+func (user *HibbettBase) addEmail(sku string) {
 	addemail := &email{
 		Email: user.email,
 	}
@@ -24,7 +24,7 @@ func (user *HibbettBase) addEmail() {
 			constants.LogStatus(user.thread, "PX Block While Adding Order Info")
 			if time.Now().Second() < 15 {
 				user.getProxy()
-				user.addEmail()
+				user.addEmail(sku)
 			} else {
 				user.loginAccount()
 			}
@@ -34,7 +34,7 @@ func (user *HibbettBase) addEmail() {
 
 	} else {
 		constants.LogStatus(user.thread, "Added Order Information")
-		user.placeOrder()
+		user.placeOrder(sku)
 	}
 
 }
@@ -51,7 +51,7 @@ func (user *HibbettBase) addEmailRequest(jsonData []byte) (res []byte, err error
 			"Accept-Language":    {"es-US;q=0.9"},
 			"Connection":         {"keep-alive"},
 			"Content-Type":       {"application/json; charset=utf-8"},
-			"platform":           {"ios"},
+			"platform":           {"android"},
 			"version":            {"6.3.0"},
 			"Authorization":      {"Bearer " + user.sessionId},
 			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},

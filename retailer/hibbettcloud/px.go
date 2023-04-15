@@ -34,7 +34,7 @@ func (user *HibbettBase) GetPX(productData string) {
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Println("Error getting px:", err)
+		fmt.Println("Error getting px")
 		user.loginAccount()
 	}
 	req.Header.Set("Content-Type", "application/json")
@@ -45,7 +45,7 @@ func (user *HibbettBase) GetPX(productData string) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error getting px:", err)
+		fmt.Println("Error getting px:")
 		user.loginAccount()
 	}
 	defer resp.Body.Close()

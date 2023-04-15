@@ -48,7 +48,7 @@ type EmbedAuthor struct {
 	ProxyIconURL string `json:"proxy_icon_url,omitempty"`
 }
 
-func SendWebhook(size string, sku string, price float64, number string, imageURL string, email string) error {
+func SendWebhook(sku string, number string, imageURL string, email string) error {
 	// create a new Discord webhook message
 	timestamp := time.Now().Format(time.RFC3339)
 
@@ -73,23 +73,13 @@ func SendWebhook(size string, sku string, price float64, number string, imageURL
 						Inline: true,
 					},
 					{
-						Name:   "Size",
-						Value:  fmt.Sprintf("%s", size),
-						Inline: true,
-					},
-					{
-						Name:   "Price",
-						Value:  fmt.Sprintf("%f", price),
+						Name:   "Site",
+						Value:  fmt.Sprintf("%s", number),
 						Inline: true,
 					},
 					{
 						Name:   "Account",
 						Value:  fmt.Sprintf("||%s||", email),
-						Inline: true,
-					},
-					{
-						Name:   "Order Number",
-						Value:  fmt.Sprintf("||%s||", number),
 						Inline: true,
 					},
 				},

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func (user *HibbettBase) placeOrder() {
+func (user *HibbettBase) placeOrder(sku string) {
 
 	constants.LogStatus(user.thread, "Placing Order")
 
@@ -28,7 +28,7 @@ func (user *HibbettBase) placeOrder() {
 			constants.LogStatus(user.thread, "PX Blocked While Placing Order")
 			if time.Now().Second() < 15 {
 				user.getProxy()
-				user.placeOrder()
+				user.placeOrder(sku)
 			} else {
 				user.loginAccount()
 			}
@@ -43,7 +43,7 @@ func (user *HibbettBase) placeOrder() {
 					if time.Now().Second() < 15 {
 						constants.LogStatus(user.thread, "Item OOS, Retrying...")
 						user.getProxy()
-						user.placeOrder()
+						user.placeOrder(sku)
 					} else {
 						constants.LogStatus(user.thread, "Item OOS")
 						user.loginAccount()
@@ -62,7 +62,7 @@ func (user *HibbettBase) placeOrder() {
 			panic(errRL)
 		}
 		fmt.Println("Checked Out")
-		errorWH := webhook.SendWebhook(Order.OrderItems[0].Sku.Size, Order.OrderItems[0].MasterID, Order.Total, Order.ID, Order.OrderItems[0].Product.ImageResources["0001-0"][0].URL, user.email)
+		errorWH := webhook.SendWebhook(sku, "Hibbett", "https://img.freepik.com/free-vector/abstract-grunge-style-coming-soon-with-black-splatter_1017-26690.jpg?w=1800&t=st=1681572739~exp=1681573339~hmac=65285803330a4a2ef3a65094e18cf7968bc698e7bc8c70e3f5641ccf06f8c1f7", user.email)
 		if errorWH != nil {
 			return
 		}
@@ -133,7 +133,7 @@ func (user *HibbettBase) placeOrderRequest() (res []byte, err error) {
 		"Accept-Language":    {"en-US;q=0.9"},
 		"Connection":         {"close"},
 		"Content-Type":       {"application/json; charset=utf-8"},
-		"platform":           {"ios"},
+		"platform":           {"android"},
 		"version":            {"6.3.0"},
 		"Authorization":      {"Bearer " + user.sessionId},
 		"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
