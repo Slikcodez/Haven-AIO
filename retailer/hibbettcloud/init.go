@@ -19,6 +19,7 @@ type HibbettBase struct {
 	token            string
 	userAgent        string
 	paymentType      string
+	pxToken          string
 	sessionId        string
 	sessionEX        string
 	customerId       string
@@ -50,6 +51,7 @@ func Init(thread string, account string, mode string) {
 
 		paymentType:      "",
 		sessionId:        "",
+		pxToken:          "",
 		sessionEX:        "",
 		headerPlaceOrder: "",
 		customerId:       "",

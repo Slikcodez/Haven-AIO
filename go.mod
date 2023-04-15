@@ -8,9 +8,9 @@ require github.com/gtuk/discordwebhook v1.1.0
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/bogdanfinn/fhttp v0.5.17 // indirect
-	github.com/bogdanfinn/tls-client v1.3.4 // indirect
-	github.com/bogdanfinn/utls v1.5.13 // indirect
+	github.com/bogdanfinn/fhttp v0.5.20 // indirect
+	github.com/bogdanfinn/tls-client v1.3.9 // indirect
+	github.com/bogdanfinn/utls v1.5.16 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/jiyeyuran/go-eventemitter v1.4.2 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect

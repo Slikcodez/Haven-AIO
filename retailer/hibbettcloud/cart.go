@@ -6,7 +6,6 @@ import (
 	http "github.com/bogdanfinn/fhttp"
 	"main/client"
 	"main/constants"
-	"math/rand"
 	"strings"
 	"time"
 )
@@ -134,26 +133,23 @@ func (user *HibbettBase) preCartRequest(jsonData []byte) (res []byte, err error)
 	pxvals := make([]string, 0)
 	pxvals = append(pxvals, "2")
 	//pxvals = append(pxvals, "4")
-	pxbase := pxvals[rand.Intn(len(pxvals))]
 
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodPost,
 		Url:    `https://hibbett-mobileapi.prolific.io/ecommerce/cart/one_tap?cardSecurityCode=` + user.cvv,
 		Headers: http.Header{
-			"Accept":              {"*/*"},
-			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":     {"es-US;q=0.9"},
-			"Connection":          {"keep-alive"},
-			"Content-Type":        {"application/json; charset=utf-8"},
-			"platform":            {"ios"},
-			"version":             {"6.3.0"},
-			"Authorization":       {"Bearer " + user.sessionId},
-			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION":  {pxbase}, //1 also works
-			"X-PX-ORIGINAL-TOKEN": {pxbase + ":" + constants.RandString()},
-			"Cache-Control":       {constants.RandString() + ", no-cache, no-store, must-revalidate"},
-			"User-Agent":          {user.userAgent},
+			"Accept":             {"*/*"},
+			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":    {"es-US;q=0.9"},
+			"Connection":         {"keep-alive"},
+			"Content-Type":       {"application/json; charset=utf-8"},
+			"platform":           {"ios"},
+			"version":            {"6.3.2"},
+			"Authorization":      {"Bearer " + user.sessionId},
+			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION": {"3:" + user.pxToken}, //1 also works
+			"User-Agent":         {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),
 		ExpectedResponse: 200,

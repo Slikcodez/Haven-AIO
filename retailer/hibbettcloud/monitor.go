@@ -39,7 +39,7 @@ func (user *HibbettBase) Monitor() {
 			if time.Now().Hour() == constants.GlobalSettings.StartTime {
 				varient, err := GetRandVar()
 				if err == nil {
-					user.preCart(varient)
+					user.GetPX(varient)
 				}
 
 			}
@@ -49,7 +49,7 @@ func (user *HibbettBase) Monitor() {
 		constants.LogStatus(user.thread, "Listening For Restocks")
 		for {
 			event := <-channels.HavenCloud.Once(constants.RandString())
-			user.preCart(event.Args[0].(string))
+			user.GetPX(event.Args[0].(string))
 		}
 	}
 }

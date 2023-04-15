@@ -41,26 +41,23 @@ func (user *HibbettBase) addEmail() {
 
 func (user *HibbettBase) addEmailRequest(jsonData []byte) (res []byte, err error) {
 
-	pxBase := "2"
-
 	res, err = client.TlsRequest(client.TLSParams{
 		Client: user.client,
 		Method: http.MethodPut,
 		Url:    `https://hibbett-mobileapi.prolific.io/ecommerce/cart/` + user.cartId + `/customer`,
 		Headers: http.Header{
-			"Accept":              {"*/*"},
-			"Accept-Encoding":     {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
-			"Accept-Language":     {"es-US;q=0.9"},
-			"Connection":          {"keep-alive"},
-			"Content-Type":        {"application/json; charset=utf-8"},
-			"platform":            {"ios"},
-			"version":             {"6.3.0"},
-			"Authorization":       {"Bearer " + user.sessionId},
-			"x-api-key":           {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
-			"X-PX-AUTHORIZATION":  {pxBase}, //1 also works
-			"X-PX-ORIGINAL-TOKEN": {pxBase + ":" + constants.RandString()},
-			"Cache-Control":       {constants.RandString() + ", no-cache, no-store, must-revalidate"},
-			"User-Agent":          {user.userAgent},
+			"Accept":             {"*/*"},
+			"Accept-Encoding":    {"br;q=1.0, gzip;q=0.9, deflate;q=0.8"},
+			"Accept-Language":    {"es-US;q=0.9"},
+			"Connection":         {"keep-alive"},
+			"Content-Type":       {"application/json; charset=utf-8"},
+			"platform":           {"ios"},
+			"version":            {"6.3.0"},
+			"Authorization":      {"Bearer " + user.sessionId},
+			"x-api-key":          {"0PutYAUfHz8ozEeqTFlF014LMJji6Rsc8bpRBGB0"},
+			"X-PX-AUTHORIZATION": {"3:" + user.pxToken}, //1 also works
+			"Cache-Control":      {constants.RandString() + ", no-cache, no-store, must-revalidate"},
+			"User-Agent":         {user.userAgent},
 		},
 		Body:             strings.NewReader(string(jsonData)),
 		ExpectedResponse: 200,

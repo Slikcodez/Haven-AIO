@@ -30,7 +30,7 @@ func GetTLS(proxy string) HttpClient {
 
 	options := []tls_client.HttpClientOption{
 		tls_client.WithTimeoutSeconds(30),
-		tls_client.WithClientProfile(tls_client.Safari_15_6_1),
+		tls_client.WithClientProfile(tls_client.Okhttp4Android7),
 		tls_client.WithNotFollowRedirects(),
 		tls_client.WithCookieJar(jar),
 	}
