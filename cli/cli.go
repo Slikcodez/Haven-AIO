@@ -64,10 +64,9 @@ Pick A Mode!
 
 	if mode == "1" {
 		return "1"
-	} else {
-		if mode == "3" {
-			return "3"
-		}
+	} else if mode == "2" {
 		return "2"
+	} else {
+		return "3"
 	}
 }
